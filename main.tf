@@ -2,10 +2,10 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+# First Bucket
 resource "aws_s3_bucket" "demo_bucket" {
   bucket = "bamboo-bucket-7423"
 
-  # Removal policy
   lifecycle {
     prevent_destroy = false
   }
@@ -24,6 +24,29 @@ resource "aws_s3_bucket_versioning" "versioning" {
   }
 }
 
+# Second Bucket
+resource "aws_s3_bucket" "demo_bucket_2" {
+  bucket = "bamboo-bucket-7423-logs"
+
+  lifecycle {
+    prevent_destroy = false
+  }
+
+  tags = {
+    Name        = "Bamboo Terraform Demo Logs"
+    Environment = "Dev"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "versioning_2" {
+  bucket = aws_s3_bucket.demo_bucket_2.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Identity Check
 data "aws_caller_identity" "current" {}
 
 output "aws_account_id" {
